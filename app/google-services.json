@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "519638421581",
+    "project_id": "cleanfix-4593d",
+    "storage_bucket": "cleanfix-4593d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519638421581:android:911936898feadff7c24c04",
+        "android_client_info": {
+          "package_name": "com.example.cleanfix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSFskZD7_EO_e_LpynTnU5y946l6YEuoU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -8,48 +8,49 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 
-import com.example.cleanfix.databinding.ActivityMainBinding;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
-public class MainActivity extends AppCompatActivity {
-    private final String TAG = "MainActivity";
-    private static final int RC_SIGN_IN = 9001;
-    private GoogleSignInClient mGoogleSignInClient;
-    private FirebaseAuth mAuth;
-    private ActivityMainBinding binding;
+public class SSOActivity extends AppCompatActivity {
     private SharedPreferences preferences;
+    private FirebaseAuth mAuth;
+    private GoogleSignInClient mGoogleSignInClient;
+    private static final int RC_SIGN_IN = 9001;
+    boolean loginSuccessful;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Check if user is authenticated
-        SharedPreferences preferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
-        boolean isAuthenticated = preferences.getBoolean("is_authenticated", false);
+        Log.i("AuthSSO", "onCreate");
+        setContentView(R.layout.activity_sso);
+        preferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
 
-        if (!isAuthenticated) {
-            // Redirect to SSOActivity
-            startActivity(new Intent(this, SSOActivity.class));
-            finish();
-            return; // Prevent further execution
-        }
+        findViewById(R.id.sign_in_button).setOnClickListener(v -> {
+            // Initialize Firebase Auth
+            mAuth = FirebaseAuth.getInstance();
 
-        // User is authenticated; load main UI
-        setContentView(R.layout.activity_main);
+            // Configure Google Sign-In
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestProfile()
+                .requestEmail()
+                .build();
+
+            mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+            // Set up Google Sign-In button
+            Button signInButton = findViewById(R.id.sign_in_button);
+            signInButton.setOnClickListener(view -> signIn());
+        });
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -66,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
                 // Handle failure
                 Log.i("AuthSSO", "Google sign-in failed with code: " + e.getStatusCode());
                 Log.i("AuthSSO", "Error Message: " + e.getMessage());
-                Toast.makeText(MainActivity.this, "Google Sign-In failed. Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -77,25 +77,21 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         // Sign in success
                         FirebaseUser user = mAuth.getCurrentUser();
-                        moveToNavigationFragment();
+                        // Save login state
+                        preferences.edit().putBoolean("is_authenticated", true).apply();
+
+                        // Navigate to MainActivity
+                        startActivity(new Intent(this, MainActivity.class));
+                        finish(); // Close SSOActivity
                     } else {
                         // If sign in fails, display a message to the user
                         Log.i("MainActivity", "signInWithCredential:failure", task.getException());
-                        Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-
-    private void moveToNavigationFragment() {
-        // Set the navigation layout
-        setContentView(R.layout.activity_main);
-
-        // Set up bottom navigation
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_new, R.id.navigation_dashboard, R.id.navigation_notifications)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupWithNavController(navView, navController);
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        Log.i("AuthSSO", "signIn " + signInIntent);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 }

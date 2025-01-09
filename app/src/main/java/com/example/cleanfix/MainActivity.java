@@ -2,6 +2,7 @@ package com.example.cleanfix;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ActivityMainBinding binding;
     private SharedPreferences preferences;
+    private final int CAMERA_REQUEST_CODE = 4711;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +56,14 @@ public class MainActivity extends AppCompatActivity {
 
         // User is authenticated; load main UI
         setContentView(R.layout.activity_main);
+
+        // Camera permissions
+        if (checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "Camera permission granted"); }
+        else{
+            requestPermissions(new String[]
+                    {android.Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
+            Log.d(TAG, "Camera permission requested"); }
 
         // Load the default fragment (e.g., HomeFragment)
         if (savedInstanceState == null) {
@@ -91,34 +101,5 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-    }
-    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        // Sign in success
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        moveToNavigationFragment();
-                    } else {
-                        // If sign in fails, display a message to the user
-                        Log.i("MainActivity", "signInWithCredential:failure", task.getException());
-                        Toast.makeText(MainActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    private void moveToNavigationFragment() {
-        // Set the navigation layout
-        setContentView(R.layout.activity_main);
-
-        // Set up bottom navigation
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.navigation_new, R.id.navigation_dashboard, R.id.navigation_notifications)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-        NavigationUI.setupWithNavController(navView, navController);
     }
 }

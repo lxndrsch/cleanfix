@@ -34,23 +34,22 @@ public class SSOActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sso);
         preferences = getSharedPreferences("app_prefs", MODE_PRIVATE);
 
-        findViewById(R.id.sign_in_button).setOnClickListener(v -> {
-            // Initialize Firebase Auth
-            mAuth = FirebaseAuth.getInstance();
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
 
-            // Configure Google Sign-In
-            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestProfile()
-                .requestEmail()
-                .build();
+        // Configure Google Sign-In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestProfile()
+            .requestEmail()
+            .build();
 
-            mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-            // Set up Google Sign-In button
-            Button signInButton = findViewById(R.id.sign_in_button);
-            signInButton.setOnClickListener(view -> signIn());
-        });
+        // Set up Google Sign-In button
+        Button signInButton = findViewById(R.id.sign_in_button);
+        signInButton.setOnClickListener(view -> signIn());
+
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

@@ -8,12 +8,16 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.cleanfix.databinding.ActivityMainBinding;
+import com.example.cleanfix.ui.NewFragment;
+import com.example.cleanfix.ui.SocialFragment;
+import com.example.cleanfix.ui.StatusFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -50,25 +54,44 @@ public class MainActivity extends AppCompatActivity {
 
         // User is authenticated; load main UI
         setContentView(R.layout.activity_main);
+
+        // Load the default fragment (e.g., HomeFragment)
+        if (savedInstanceState == null) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container, new NewFragment())
+                    .commit();
+        }
+
+        // Set up Bottom Navigation
+        BottomNavigationView bottomNavigationView = findViewById(R.id.nav_view);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            Fragment selectedFragment = null;
+
+            if (item.getItemId() == R.id.navigation_new) {
+                selectedFragment = new NewFragment();
+            } else if (item.getItemId() == R.id.navigation_status) {
+                selectedFragment = new StatusFragment();
+            } else if (item.getItemId() == R.id.navigation_social) {
+                selectedFragment = new SocialFragment();
+            }
+
+            // Replace the fragment
+            if (selectedFragment != null) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.container, selectedFragment)
+                        .commit();
+            }
+
+            return true;
+        });
+
     }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.w("AuthSSO", "requestCode " + requestCode + "resultCode " + resultCode + "data " + data);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                // Attempt to get the GoogleSignInAccount
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                // If successful, proceed with Firebase authentication or your app logic
-                firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                // Handle failure
-                Log.i("AuthSSO", "Google sign-in failed with code: " + e.getStatusCode());
-                Log.i("AuthSSO", "Error Message: " + e.getMessage());
-                Toast.makeText(MainActivity.this, "Google Sign-In failed. Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }
+
     }
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);

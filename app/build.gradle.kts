@@ -51,6 +51,11 @@ dependencies {
 
     // Google Play Services dependencies
     implementation("com.google.android.gms:play-services-auth:20.7.0")
+    implementation("com.google.firebase:firebase-storage:20.2.1'")
+    implementation("androidx.activity:activity:1.7.2")
+    implementation("androidx.fragment:fragment:1.6.1")
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    annotationProcessor("com.github.bumptech.glide:compiler:4.15.1")
 
     // AndroidX dependencies
     implementation(libs.appcompat)

@@ -43,6 +43,7 @@ public class NewFragment extends Fragment {
     private PhotoAdapter photoAdapter;
     private ActivityResultLauncher<Intent> someActivityResultLauncher;
     private static final String TAG = "NewFragment";
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -53,6 +54,7 @@ public class NewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setActivityLauncher();
+
         RecyclerView photoRecyclerView = view.findViewById(R.id.photo_recycler_view);
         photoAdapter = new PhotoAdapter(photoUris);
         photoRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -64,49 +66,61 @@ public class NewFragment extends Fragment {
         takePhotoButton.setOnClickListener(v -> dispatchTakePictureIntent());
         submitPhotosButton.setOnClickListener(v -> uploadPhotosToFirebase());
     }
-    private void setActivityLauncher() { someActivityResultLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) { if (result.getResultCode() == Activity.RESULT_OK) {
-                    Log.d(TAG,"Photo has been taken"); }
-                } });
+
+    private void setActivityLauncher() {
+        someActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            // Add the photo's URI to the list
+                            Uri photoUri = Uri.fromFile(new File(currentPhotoPath));
+                            photoUris.add(photoUri);
+                            photoAdapter.notifyDataSetChanged();
+
+                            Log.d(TAG, "Photo successfully taken and added to list: " + photoUri.toString());
+                        } else {
+                            Log.d(TAG, "Photo taking cancelled or failed.");
+                        }
+                    }
+                }
+        );
     }
-    private void takePhoto() {
-        Log.d(TAG,"Use system camera to take photo");
-        // use Intent to access camera
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); try {
-            someActivityResultLauncher.launch(takePictureIntent); }
-        catch (Exception e) {
-            e.printStackTrace(); }
-    }
+
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        someActivityResultLauncher.launch(takePictureIntent);
-        File photoFile;
+        File photoFile = null;
+
         try {
-            Log.d(TAG,"create ImageFile");
+            Log.d(TAG, "Creating image file...");
             photoFile = createImageFile();
-            Log.d(TAG,"created ImageFile"+photoFile);
+            Log.d(TAG, "Image file created: " + photoFile.getAbsolutePath());
         } catch (IOException ex) {
             Toast.makeText(requireContext(), "Error creating file", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Error creating file", ex);
             return;
         }
 
         if (photoFile != null) {
             Uri photoUri = FileProvider.getUriForFile(requireContext(), "com.example.cleanfix.fileprovider", photoFile);
+            currentPhotoPath = photoFile.getAbsolutePath();
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
-            startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
+            someActivityResultLauncher.launch(takePictureIntent);
         }
-
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == requireActivity().RESULT_OK) {
+        if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+            Log.d(TAG, "Photo successfully taken. Path: " + currentPhotoPath);
             Uri photoUri = Uri.fromFile(new File(currentPhotoPath));
             photoUris.add(photoUri);
             photoAdapter.notifyDataSetChanged();
+            Log.d(TAG, "Photo URI added: " + photoUri.toString());
+        } else {
+            Log.d(TAG, "Photo not taken or operation failed.");
         }
     }
 
@@ -122,22 +136,25 @@ public class NewFragment extends Fragment {
     private void uploadPhotosToFirebase() {
         if (photoUris.isEmpty()) {
             Toast.makeText(requireContext(), "No photos to upload", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "No photos to upload.");
             return;
         }
 
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+
         for (Uri photoUri : photoUris) {
-            String fileName = "issues/" + System.currentTimeMillis() + "_" + photoUri.getLastPathSegment();
+            Log.d(TAG, "Uploading photo: " + photoUri.toString());
+            String fileName = "issues/" + System.currentTimeMillis() + "_" + new File(photoUri.getPath()).getName();
             StorageReference photoRef = storageReference.child(fileName);
 
             photoRef.putFile(photoUri)
                     .addOnSuccessListener(taskSnapshot -> {
                         Toast.makeText(requireContext(), "Photo uploaded successfully", Toast.LENGTH_SHORT).show();
-                        Log.d("NewFragment", "Uploaded: " + fileName);
+                        Log.d(TAG, "Uploaded: " + fileName);
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(requireContext(), "Upload failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        Log.e("NewFragment", "Upload failed", e);
+                        Log.e(TAG, "Upload failed", e);
                     });
         }
     }

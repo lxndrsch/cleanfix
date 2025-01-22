@@ -12,10 +12,10 @@
         tools:layout="@layout/fragment_new" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_status"
         android:name="com.example.cleanfix.ui.StatusFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_new" />
+        tools:layout="@layout/fragment_status" />
 
     <fragment
         android:id="@+id/navigation_notifications"

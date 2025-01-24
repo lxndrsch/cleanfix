@@ -1,0 +1,41 @@
+{
+  "issues": {
+    "issue_id_1": {
+      "issueId": "issue_id_1",
+      "userId": "user_id_1",
+      "description": "Pothole on Main Street",
+      "longitude": "1234",
+      "latitudde": "1234",
+      "photoUrls": [
+        "https://firebasestorage.googleapis.com/photo1.jpg",
+        "https://firebasestorage.googleapis.com/photo2.jpg"
+      ],
+      "status": "new",
+      "allowedUsers": {
+        "user_id_1": { "role": "owner" },
+        "user_id_2": { "role": "collaborator" },
+        "user_id_3": { "role": "collaborator" }
+      },
+      "timestamp": "2025-01-24T12:00:00Z",
+      "timezone": "UTC",
+      "country": "USA",
+      "postalCode": "12345"
+    },
+    "issue_id_2": {
+      "issueId": "issue_id_2",
+      "userId": "user_id_3",
+      "description": "Broken light in parking lot",
+      "longitude": "213",
+      "latitudde": "123",
+      "photoUrls": [],
+      "status": "new",
+      "allowedUsers": {
+        "user_id_3": { "role": "owner" }
+      },
+      "timestamp": "2025-01-24T12:00:00Z",
+      "timezone": "UTC",
+      "country": "USA",
+      "postalCode": "54321"
+    }
+  }
+}

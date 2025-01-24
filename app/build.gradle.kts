@@ -51,6 +51,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics:21.0.0")
 
     // Google Play Services dependencies
+    implementation("com.google.android.gms:play-services-location:21.0.1")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.google.firebase:firebase-storage:20.2.1'")
     implementation("androidx.activity:activity:1.7.2")

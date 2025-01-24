@@ -57,14 +57,6 @@ public class MainActivity extends AppCompatActivity {
         // User is authenticated; load main UI
         setContentView(R.layout.activity_main);
 
-        // Camera permissions
-        if (checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            Log.d(TAG, "Camera permission granted"); }
-        else{
-            requestPermissions(new String[]
-                    {android.Manifest.permission.CAMERA}, CAMERA_REQUEST_CODE);
-            Log.d(TAG, "Camera permission requested"); }
-
         // Load the default fragment (e.g., HomeFragment)
         if (savedInstanceState == null) {
             getSupportFragmentManager()

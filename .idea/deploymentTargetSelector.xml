@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="CleanFix">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-01-07T15:15:33.179826Z">
+        <DropdownSelection timestamp="2025-01-26T13:10:06.115836Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=ZT322SJD3X" />

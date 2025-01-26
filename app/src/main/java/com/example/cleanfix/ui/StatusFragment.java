@@ -5,29 +5,40 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cleanfix.R;
-import com.example.cleanfix.adapter.ImageAdapter;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
-import com.google.firebase.storage.StorageReference;
+import com.example.cleanfix.adapter.StatusAdapter;
+import com.example.cleanfix.model.Issue;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StatusFragment extends Fragment {
 
     private static final String TAG = "StatusFragment";
-    private RecyclerView recyclerView;
-    private ImageAdapter imageAdapter;
-    private ArrayList<String> imageUrls = new ArrayList<>();
-    private StorageReference storageReference;
+
+    private RecyclerView statusRecyclerView;
+    private ProgressBar progressBar;
+    private TextView noIssuesTextView;
+
+    private StatusAdapter statusAdapter;
+    private List<Issue> issueList = new ArrayList<>();
 
     @Nullable
     @Override
@@ -39,35 +50,61 @@ public class StatusFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.status_recycler_view);
-        recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2)); // 2-column grid layout
-        imageAdapter = new ImageAdapter(imageUrls);
-        recyclerView.setAdapter(imageAdapter);
+        statusRecyclerView = view.findViewById(R.id.status_recycler_view);
+        progressBar = view.findViewById(R.id.status_progress_bar);
+        noIssuesTextView = view.findViewById(R.id.no_issues_text_view);
 
-        storageReference = FirebaseStorage.getInstance().getReference().child("issues/");
-
-        fetchImageUrls();
+        setupRecyclerView();
+        fetchIssuesFromFirebase();
     }
 
-    private void fetchImageUrls() {
-        storageReference.listAll()
-                .addOnSuccessListener(listResult -> {
-                    for (StorageReference fileRef : listResult.getItems()) {
-                        fileRef.getDownloadUrl()
-                                .addOnSuccessListener(uri -> {
-                                    imageUrls.add(uri.toString());
-                                    imageAdapter.notifyDataSetChanged();
-                                    Log.d(TAG, "Image URL added: " + uri.toString());
-                                })
-                                .addOnFailureListener(e -> {
-                                    Toast.makeText(requireContext(), "Failed to get image URL", Toast.LENGTH_SHORT).show();
-                                    Log.e(TAG, "Error getting image URL", e);
-                                });
+    private void setupRecyclerView() {
+        statusAdapter = new StatusAdapter(issueList);
+        statusRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        statusRecyclerView.setAdapter(statusAdapter);
+    }
+
+    private void fetchIssuesFromFirebase() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(requireContext(), "User not logged in.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userId = currentUser.getUid();
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("issues");
+
+        progressBar.setVisibility(View.VISIBLE);
+        noIssuesTextView.setVisibility(View.GONE);
+
+        databaseReference.orderByChild("userId").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                issueList.clear();
+
+                for (DataSnapshot issueSnapshot : snapshot.getChildren()) {
+                    Issue issue = issueSnapshot.getValue(Issue.class);
+                    if (issue != null) {
+                        issueList.add(issue);
                     }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(requireContext(), "Failed to fetch images", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Error fetching images", e);
-                });
+                }
+
+                progressBar.setVisibility(View.GONE);
+                if (issueList.isEmpty()) {
+                    noIssuesTextView.setVisibility(View.VISIBLE);
+                } else {
+                    noIssuesTextView.setVisibility(View.GONE);
+                }
+                statusAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                progressBar.setVisibility(View.GONE);
+                noIssuesTextView.setVisibility(View.VISIBLE);
+                Toast.makeText(requireContext(), "Failed to fetch issues.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Database error: " + error.getMessage());
+            }
+        });
     }
 }

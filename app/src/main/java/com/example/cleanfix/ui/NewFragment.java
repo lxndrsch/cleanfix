@@ -27,11 +27,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cleanfix.R;
 import com.example.cleanfix.adapter.PhotoAdapter;
+import com.example.cleanfix.model.Issue;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,10 +47,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class NewFragment extends Fragment {
 
@@ -88,7 +87,7 @@ public class NewFragment extends Fragment {
         setActivityLauncher();
 
         photoAdapter = new PhotoAdapter(photoUris);
-        photoRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        photoRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         photoRecyclerView.setAdapter(photoAdapter);
 
         takePhotoButton.setOnClickListener(v -> checkPermissionsAndTakePhoto());
@@ -232,29 +231,35 @@ public class NewFragment extends Fragment {
                     .addOnSuccessListener(taskSnapshot -> photoRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         photoUrls.add(uri.toString());
 
+                        // Check if all photos are uploaded
                         if (photoUrls.size() == photoUris.size()) {
                             String issueId = databaseReference.push().getKey();
                             if (issueId != null) {
-                                Map<String, Object> issueData = new HashMap<>();
-                                issueData.put("issueId", issueId);
-                                issueData.put("userId", userId);
-                                issueData.put("description", description);
-                                issueData.put("longitude", currentLocation.getLongitude());
-                                issueData.put("latitude", currentLocation.getLatitude());
-                                issueData.put("photoUrls", photoUrls);
-                                issueData.put("status", "new");
-                                issueData.put("timestamp", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(new Date()));
-                                issueData.put("timezone", "UTC");
-
-                                databaseReference.child(issueId).setValue(issueData).addOnSuccessListener(aVoid ->
-                                        Toast.makeText(requireContext(), "Issue uploaded successfully.", Toast.LENGTH_SHORT).show()
-                                ).addOnFailureListener(e ->
-                                        Toast.makeText(requireContext(), "Failed to upload issue.", Toast.LENGTH_SHORT).show()
+                                Issue issue = new Issue(
+                                        issueId, userId, description,
+                                        currentLocation.getLatitude(), currentLocation.getLongitude(),
+                                        photoUrls, "new",
+                                        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(new Date())
                                 );
+
+                                databaseReference.child(issueId).setValue(issue)
+                                        .addOnSuccessListener(aVoid -> {
+                                            Toast.makeText(requireContext(), "Issue uploaded successfully.", Toast.LENGTH_SHORT).show();
+                                            resetForm();
+                                        })
+                                        .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to upload issue.", Toast.LENGTH_SHORT).show());
                             }
                         }
                     }))
                     .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to upload photo.", Toast.LENGTH_SHORT).show());
         }
+    }
+
+    private void resetForm() {
+        descriptionEditText.setText("");
+        photoUris.clear();
+        photoAdapter.notifyDataSetChanged();
+        locationTextView.setText("Location: Not Available");
+        currentLocation = null;
     }
 }

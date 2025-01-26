@@ -8,16 +8,16 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.cleanfix.databinding.FragmentNotificationsBinding;
+import com.example.cleanfix.databinding.FragmentSocialBinding;
 
 public class SocialFragment extends Fragment {
 
-    private FragmentNotificationsBinding binding;
+    private FragmentSocialBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
-        binding = FragmentNotificationsBinding.inflate(inflater, container, false);
+        binding = FragmentSocialBinding.inflate(inflater, container, false);
 
         return binding.getRoot();
     }

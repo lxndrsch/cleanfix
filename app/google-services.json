@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "519638421581",
+    "firebase_url": "https://cleanfix-4593d-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "cleanfix-4593d",
     "storage_bucket": "cleanfix-4593d.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.example.cleanfix"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "519638421581-7kjif3o7kkrubbvfcc2bj9es3f7rmb9g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cleanfix",
+            "certificate_hash": "e9f5c0cc4bfe2d0abba1173c4773738e321e4844"
+          }
+        },
+        {
+          "client_id": "519638421581-ve8obc3db19bp184kjqka1nq7pfrppqt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCSFskZD7_EO_e_LpynTnU5y946l6YEuoU"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "519638421581-ve8obc3db19bp184kjqka1nq7pfrppqt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

@@ -4,7 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="?attr/actionBarSize">
+    android:paddingBottom="?attr/actionBarSize"
+    android:background="#0D1B2A">
+
+    <!-- TextView for displaying today's date -->
+    <TextView
+        android:id="@+id/date_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:textColor="#FFFFFF"
+    android:textSize="16sp"
+    android:textStyle="bold"
+    android:text="Date: 2025-01-25" />
 
     <!-- Non-editable text field for displaying location -->
     <TextView
@@ -12,18 +24,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:textColor="@color/black"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:text="Location: Not Available" />
-
-    <!-- EditText for issue description -->
-    <EditText
-        android:id="@+id/description_edit_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Add a description..."
-        android:padding="8dp" />
+        android:textColor="#FFFFFF"
+    android:textSize="16sp"
+    android:textStyle="bold"
+    android:text="Location: Not Available" />
 
     <!-- RecyclerView for displaying photos -->
     <androidx.recyclerview.widget.RecyclerView
@@ -34,18 +38,43 @@
         android:padding="8dp"
         android:scrollbars="vertical" />
 
-    <!-- Button to take a new photo -->
-    <Button
-        android:id="@+id/take_photo_button"
+    <!-- EditText for issue description -->
+    <EditText
+        android:id="@+id/description_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Take Photo" />
+        android:hint="Add a description..."
+        android:padding="8dp"
+        android:backgroundTint="#1B263B"
+    android:textColor="#FFFFFF"
+    android:textColorHint="#FFFFFF" />
 
-    <!-- Button to submit photos and issue -->
-    <Button
-        android:id="@+id/submit_photos_button"
+    <!-- Horizontal LinearLayout for buttons -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Submit Issue" />
+        android:orientation="horizontal">
 
+        <!-- Button to take a new photo -->
+        <Button
+            android:id="@+id/take_photo_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="80dp"
+        android:text="Take Photo"
+        android:backgroundTint="#415A77"
+        android:textColor="#FFFFFF" />
+
+        <!-- Button to submit photos and issue -->
+        <Button
+            android:id="@+id/submit_photos_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="80dp"
+        android:text="Submit Issue"
+        android:backgroundTint="#415A77"
+        android:textColor="#FFFFFF" />
+    </LinearLayout>
 </LinearLayout>

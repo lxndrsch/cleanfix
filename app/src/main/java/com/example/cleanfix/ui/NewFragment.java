@@ -19,8 +19,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -36,6 +34,8 @@ import com.example.cleanfix.R;
 import com.example.cleanfix.adapter.PhotoAdapter;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -46,8 +46,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class NewFragment extends Fragment {
 
@@ -55,7 +57,7 @@ public class NewFragment extends Fragment {
     private static final int PERMISSION_CODE = 1000;
 
     private TextView locationTextView;
-    private EditText descriptionEditText; // New field for description
+    private EditText descriptionEditText;
     private RecyclerView photoRecyclerView;
     private Button takePhotoButton, submitPhotosButton;
 
@@ -149,10 +151,8 @@ public class NewFragment extends Fragment {
                 String locationText = String.format(Locale.getDefault(), "Lat: %.5f, Lon: %.5f\n", latitude, longitude);
                 locationTextView.setText(locationText + "Fetching address...");
                 fetchAddress(latitude, longitude);
-                Log.d(TAG, "Location captured.");
             } else {
                 locationTextView.setText("Location: Not Available");
-                Log.d(TAG, "Failed to get location.");
             }
         });
     }
@@ -174,7 +174,6 @@ public class NewFragment extends Fragment {
                     requireActivity().runOnUiThread(() -> locationTextView.setText("Address: Not Available"));
                 }
             } catch (IOException e) {
-                Log.e(TAG, "Error fetching address: ", e);
                 requireActivity().runOnUiThread(() -> locationTextView.setText("Address: Not Available"));
             }
         }).start();
@@ -196,32 +195,6 @@ public class NewFragment extends Fragment {
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        if (requestCode == PERMISSION_CODE) {
-            boolean cameraPermissionGranted = false;
-            boolean locationPermissionGranted = false;
-
-            for (int i = 0; i < permissions.length; i++) {
-                if (permissions[i].equals(Manifest.permission.CAMERA)) {
-                    cameraPermissionGranted = grantResults[i] == PackageManager.PERMISSION_GRANTED;
-                }
-                if (permissions[i].equals(Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    locationPermissionGranted = grantResults[i] == PackageManager.PERMISSION_GRANTED;
-                }
-            }
-
-            if (cameraPermissionGranted && locationPermissionGranted) {
-                dispatchTakePictureIntent();
-                fetchLocation();
-            } else {
-                Toast.makeText(requireContext(), "Permissions are required to use this feature.", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
     private void uploadIssueToFirebase() {
         String description = descriptionEditText.getText().toString().trim();
 
@@ -240,42 +213,48 @@ public class NewFragment extends Fragment {
             return;
         }
 
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(requireContext(), "User not logged in.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String userId = currentUser.getUid();
         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("issues");
         StorageReference storageReference = FirebaseStorage.getInstance().getReference();
 
+        List<String> photoUrls = new ArrayList<>();
         for (Uri photoUri : photoUris) {
             String fileName = "issues/" + System.currentTimeMillis() + "_" + new File(photoUri.getPath()).getName();
             StorageReference photoRef = storageReference.child(fileName);
 
             photoRef.putFile(photoUri)
-                    .addOnSuccessListener(taskSnapshot -> {
-                        Toast.makeText(requireContext(), "Photo uploaded", Toast.LENGTH_SHORT).show();
+                    .addOnSuccessListener(taskSnapshot -> photoRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        photoUrls.add(uri.toString());
 
-                        String issueId = databaseReference.push().getKey();
-                        if (issueId != null) {
-                            databaseReference.child(issueId).setValue(new Issue(
-                                    currentLocation.getLatitude(),
-                                    currentLocation.getLongitude(),
-                                    fileName,
-                                    description
-                            ));
+                        if (photoUrls.size() == photoUris.size()) {
+                            String issueId = databaseReference.push().getKey();
+                            if (issueId != null) {
+                                Map<String, Object> issueData = new HashMap<>();
+                                issueData.put("issueId", issueId);
+                                issueData.put("userId", userId);
+                                issueData.put("description", description);
+                                issueData.put("longitude", currentLocation.getLongitude());
+                                issueData.put("latitude", currentLocation.getLatitude());
+                                issueData.put("photoUrls", photoUrls);
+                                issueData.put("status", "new");
+                                issueData.put("timestamp", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(new Date()));
+                                issueData.put("timezone", "UTC");
+
+                                databaseReference.child(issueId).setValue(issueData).addOnSuccessListener(aVoid ->
+                                        Toast.makeText(requireContext(), "Issue uploaded successfully.", Toast.LENGTH_SHORT).show()
+                                ).addOnFailureListener(e ->
+                                        Toast.makeText(requireContext(), "Failed to upload issue.", Toast.LENGTH_SHORT).show()
+                                );
+                            }
                         }
-                    })
-                    .addOnFailureListener(e -> Log.e(TAG, "Photo upload failed", e));
-        }
-    }
-
-    static class Issue {
-        public double latitude;
-        public double longitude;
-        public String photoPath;
-        public String description;
-
-        public Issue(double latitude, double longitude, String photoPath, String description) {
-            this.latitude = latitude;
-            this.longitude = longitude;
-            this.photoPath = photoPath;
-            this.description = description;
+                    }))
+                    .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to upload photo.", Toast.LENGTH_SHORT).show());
         }
     }
 }

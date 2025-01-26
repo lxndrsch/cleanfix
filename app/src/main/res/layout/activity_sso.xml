@@ -6,22 +6,25 @@
     android:padding="16dp"
     android:gravity="center">
 
-    <!-- App Logo or Welcome Text -->
+    <!-- App Logo or Welcome Image -->
     <ImageView
         android:id="@+id/app_logo"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
-        />  <!-- Replace with your logo -->
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/cleanfix" />
 
     <!-- Welcome Message or Title -->
     <TextView
         android:id="@+id/welcome_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CleanFix"
+        android:text="Report, Restore, Revitalize"
         android:textSize="24sp"
         android:textStyle="bold"
+        android:textColor="#A5D6A7"
         android:layout_marginBottom="16dp"
         android:gravity="center" />
 
@@ -32,7 +35,7 @@
         android:layout_height="wrap_content"
         android:text="Sign in with Google"
         android:layout_marginTop="32dp"
-        android:background="@android:color/holo_blue_dark"
+        android:backgroundTint="#A5D6A7"
         android:textColor="@android:color/white"
         android:textSize="16sp"
         android:padding="16dp" />

@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="#0D1B2A">
 
     <!-- App Logo or Welcome Image -->
     <ImageView
@@ -24,7 +25,7 @@
         android:text="Report, Restore, Revitalize"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="#A5D6A7"
+        android:textColor="#FFFFFF"
         android:layout_marginBottom="16dp"
         android:gravity="center" />
 
@@ -35,9 +36,9 @@
         android:layout_height="wrap_content"
         android:text="Sign in with Google"
         android:layout_marginTop="32dp"
-        android:backgroundTint="#A5D6A7"
+        android:backgroundTint="#0A1521"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
+        android:textSize="20sp"
         android:padding="16dp" />
 
     <!-- Optionally, other UI elements like Terms of Service or Privacy Policy -->

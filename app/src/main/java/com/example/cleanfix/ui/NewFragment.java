@@ -81,11 +81,16 @@ public class NewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        TextView dateTextView = view.findViewById(R.id.date_text_view);
         locationTextView = view.findViewById(R.id.location_text_view);
         descriptionEditText = view.findViewById(R.id.description_edit_text);
         photoRecyclerView = view.findViewById(R.id.photo_recycler_view);
         takePhotoButton = view.findViewById(R.id.take_photo_button);
         submitPhotosButton = view.findViewById(R.id.submit_photos_button);
+
+        // Dynamically set today's date
+        java.time.LocalDate currentDate = java.time.LocalDate.now();
+        dateTextView.setText(String.format(Locale.getDefault(), "Date: %s", currentDate.toString()));
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
         setActivityLauncher();
@@ -175,7 +180,7 @@ public class NewFragment extends Fragment {
                     timezone = java.util.TimeZone.getDefault().getID();
 
                     requireActivity().runOnUiThread(() -> {
-                        String locationText = String.format(Locale.getDefault(), "Address: %s\nCountry: %s\nPostal Code: %s", addressText, country, postalCode);
+                        String locationText = String.format(Locale.getDefault(), "Address: %s", addressText);
                         locationTextView.setText(locationText);
                     });
                 } else {

@@ -2,18 +2,18 @@ package com.example.cleanfix.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.cleanfix.R;
 import com.example.cleanfix.model.Issue;
 import com.example.cleanfix.ui.IssueDetailActivity;
@@ -72,8 +72,19 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusAdapter.StatusView
                 Log.e("StatusAdapter", "Error starting IssueDetailActivity: ", e);
             }
         });
-    }
 
+        // Set up PhotoAdapter for the issue's photos
+        if (issue.getPhotoUrls() != null && !issue.getPhotoUrls().isEmpty()) {
+            ArrayList<Uri> photoUris = new ArrayList<>();
+            for (String url : issue.getPhotoUrls()) {
+                photoUris.add(Uri.parse(url)); // Convert String to Uri
+            }
+
+            PhotoAdapter photoAdapter = new PhotoAdapter(photoUris); // Pass the converted list of Uris
+            holder.photosRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+            holder.photosRecyclerView.setAdapter(photoAdapter);
+        }
+    }
 
     @Override
     public int getItemCount() {
@@ -83,27 +94,18 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusAdapter.StatusView
     static class StatusViewHolder extends RecyclerView.ViewHolder {
         private final TextView descriptionTextView;
         private final TextView statusTextView;
-        private final ImageView issueImageView;
+        private final RecyclerView photosRecyclerView;
 
         public StatusViewHolder(@NonNull View itemView) {
             super(itemView);
             descriptionTextView = itemView.findViewById(R.id.description_text_view);
             statusTextView = itemView.findViewById(R.id.status_text_view);
-            issueImageView = itemView.findViewById(R.id.issue_image_view);
+            photosRecyclerView = itemView.findViewById(R.id.photos_recycler_view);
         }
 
         public void bind(Issue issue) {
             descriptionTextView.setText(issue.getDescription());
             statusTextView.setText(String.format("Status: %s", issue.getStatus()));
-
-            if (issue.getPhotoUrls() != null && !issue.getPhotoUrls().isEmpty()) {
-                Glide.with(itemView.getContext())
-                        .load(issue.getPhotoUrls().get(0))
-                        .placeholder(R.drawable.placeholder_image)
-                        .into(issueImageView);
-            } else {
-                issueImageView.setImageResource(R.drawable.placeholder_image);
-            }
         }
     }
 }

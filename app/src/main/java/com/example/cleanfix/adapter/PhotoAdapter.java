@@ -15,10 +15,11 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.cleanfix.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder> {
 
-    private final ArrayList<Uri> photoUris;
+    private final List<Uri> photoUris;
 
     public PhotoAdapter(ArrayList<Uri> photoUris) {
         this.photoUris = photoUris;

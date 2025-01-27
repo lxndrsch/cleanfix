@@ -21,7 +21,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
     private final List<Uri> photoUris;
 
-    public PhotoAdapter(ArrayList<Uri> photoUris) {
+    public PhotoAdapter(List<Uri> photoUris) {
         this.photoUris = photoUris;
     }
 

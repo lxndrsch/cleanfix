@@ -1,69 +1,64 @@
 package com.example.cleanfix.ui;
 
-import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cleanfix.R;
-import com.example.cleanfix.model.Issue;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.example.cleanfix.adapter.PhotoAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class IssueDetailActivity extends AppCompatActivity {
 
     private ImageButton backButton;
-    private Button markResolvedButton;
-
-    private String issueId;
-    private Issue issue;
-    private DatabaseReference databaseReference;
+    private TextView descriptionTextView, statusTextView;
+    private RecyclerView photosRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_issue_detail);
 
+        // Initialize views
         backButton = findViewById(R.id.back_button);
-        markResolvedButton = findViewById(R.id.resolve_button);
+        descriptionTextView = findViewById(R.id.description_text_view);
+        statusTextView = findViewById(R.id.status_text_view);
+        photosRecyclerView = findViewById(R.id.photos_recycler_view);
 
-        issueId = getIntent().getStringExtra("issueId");
-        issue = (Issue) getIntent().getSerializableExtra("issue");  // Or get the Issue object
+        // Get data from Intent
+        String description = getIntent().getStringExtra("description");
+        String status = getIntent().getStringExtra("status");
+        ArrayList<String> photoUrls = getIntent().getStringArrayListExtra("photoUrls");
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("issues");
+        // Set issue details
+        descriptionTextView.setText(description);
+        statusTextView.setText(String.format("Status: %s", status));
 
-        backButton.setOnClickListener(v -> {
-            // Navigate back to StatusFragment
-            onBackPressed();
-        });
-
-        markResolvedButton.setOnClickListener(v -> {
-            // Change the issue status to "Resolved"
-            if (issue != null) {
-                issue.setStatus("Resolved");
-                databaseReference.child(issueId).setValue(issue)
-                        .addOnSuccessListener(aVoid -> {
-                            Toast.makeText(this, "Issue marked as resolved", Toast.LENGTH_SHORT).show();
-                            // Navigate back to StatusFragment
-                            onBackPressed();
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(this, "Failed to update status", Toast.LENGTH_SHORT).show();
-                        });
-
+        // Handle photos
+        if (photoUrls != null && !photoUrls.isEmpty()) {
+            List<Uri> photoUris = new ArrayList<>();
+            for (String url : photoUrls) {
+                photoUris.add(Uri.parse(url));
             }
-            onBackPressed();
-        });
+            setupPhotoRecyclerView(photoUris);
+        }
+
+        // Back button functionality
+        backButton.setOnClickListener(v -> onBackPressed());
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        // You can use `finish()` to close the current activity and return to StatusFragment
-        finish();
+    private void setupPhotoRecyclerView(List<Uri> photoUris) {
+        photosRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        PhotoAdapter photoAdapter = new PhotoAdapter(photoUris);
+        photosRecyclerView.setAdapter(photoAdapter);
     }
 }

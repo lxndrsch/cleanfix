@@ -67,6 +67,10 @@ public class NewFragment extends Fragment {
     private FusedLocationProviderClient fusedLocationClient;
     private Location currentLocation;
 
+    private String country;
+    private String postalCode;
+    private String timezone;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -164,9 +168,14 @@ public class NewFragment extends Fragment {
                 if (addresses != null && !addresses.isEmpty()) {
                     Address address = addresses.get(0);
                     String addressText = address.getAddressLine(0);
+                    country = address.getCountryName();
+                    postalCode = address.getPostalCode();
+
+                    // Get timezone using the latitude and longitude
+                    timezone = java.util.TimeZone.getDefault().getID();
 
                     requireActivity().runOnUiThread(() -> {
-                        String locationText = String.format(Locale.getDefault(), "Address: %s", addressText);
+                        String locationText = String.format(Locale.getDefault(), "Address: %s\nCountry: %s\nPostal Code: %s", addressText, country, postalCode);
                         locationTextView.setText(locationText);
                     });
                 } else {
@@ -239,7 +248,8 @@ public class NewFragment extends Fragment {
                                         issueId, userId, description,
                                         currentLocation.getLatitude(), currentLocation.getLongitude(),
                                         photoUrls, "new",
-                                        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(new Date())
+                                        new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(new Date()),
+                                        timezone, country, postalCode
                                 );
 
                                 databaseReference.child(issueId).setValue(issue)

@@ -11,12 +11,15 @@ public class Issue {
     private List<String> photoUrls;
     private String status;
     private String timestamp;
+    private String timezone;
+    private String country;
+    private String postalCode;
 
     // Default constructor (required for Firebase)
     public Issue() {}
 
     public Issue(String issueId, String userId, String description, double latitude, double longitude,
-                 List<String> photoUrls, String status, String timestamp) {
+                 List<String> photoUrls, String status, String timestamp, String timezone, String country, String postalCode) {
         this.issueId = issueId;
         this.userId = userId;
         this.description = description;
@@ -25,6 +28,9 @@ public class Issue {
         this.photoUrls = photoUrls;
         this.status = status;
         this.timestamp = timestamp;
+        this.timezone = timezone;
+        this.country = country;
+        this.postalCode = postalCode;
     }
 
     // Getters and Setters
@@ -90,5 +96,28 @@ public class Issue {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 }

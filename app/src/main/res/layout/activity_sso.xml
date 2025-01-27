@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:text="Sign in with Google"
         android:layout_marginTop="32dp"
-        android:backgroundTint="#0A1521"
+        android:backgroundTint="#415A77"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:padding="16dp" />

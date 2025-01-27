@@ -74,9 +74,9 @@ public class MainActivity extends AppCompatActivity {
                 selectedFragment = new NewFragment();
             } else if (item.getItemId() == R.id.navigation_status) {
                 selectedFragment = new StatusFragment();
-            } else if (item.getItemId() == R.id.navigation_social) {
-                selectedFragment = new SocialFragment();
-            }
+            }// else if (item.getItemId() == R.id.navigation_social) {
+               // selectedFragment = new SocialFragment();
+            //}
 
             // Replace the fragment
             if (selectedFragment != null) {

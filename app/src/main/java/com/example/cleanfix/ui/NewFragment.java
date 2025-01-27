@@ -95,7 +95,7 @@ public class NewFragment extends Fragment {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext());
         setActivityLauncher();
 
-        photoAdapter = new PhotoAdapter(photoUris);
+        photoAdapter = new PhotoAdapter(photoUris, 4);
         photoRecyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         photoRecyclerView.setAdapter(photoAdapter);
 

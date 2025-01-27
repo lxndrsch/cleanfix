@@ -58,7 +58,7 @@ public class IssueDetailActivity extends AppCompatActivity {
 
     private void setupPhotoRecyclerView(List<Uri> photoUris) {
         photosRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        PhotoAdapter photoAdapter = new PhotoAdapter(photoUris);
+        PhotoAdapter photoAdapter = new PhotoAdapter(photoUris, 4);
         photosRecyclerView.setAdapter(photoAdapter);
     }
 }

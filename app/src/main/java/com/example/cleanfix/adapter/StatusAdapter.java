@@ -80,7 +80,7 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusAdapter.StatusView
                 photoUris.add(Uri.parse(url)); // Convert String to Uri
             }
 
-            PhotoAdapter photoAdapter = new PhotoAdapter(photoUris); // Pass the converted list of Uris
+            PhotoAdapter photoAdapter = new PhotoAdapter(photoUris,1); // Pass the converted list of Uris
             holder.photosRecyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             holder.photosRecyclerView.setAdapter(photoAdapter);
         }

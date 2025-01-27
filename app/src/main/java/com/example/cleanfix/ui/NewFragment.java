@@ -70,6 +70,7 @@ public class NewFragment extends Fragment {
     private String country;
     private String postalCode;
     private String timezone;
+    private String addressText;
 
     @Nullable
     @Override
@@ -172,7 +173,7 @@ public class NewFragment extends Fragment {
                 List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
                 if (addresses != null && !addresses.isEmpty()) {
                     Address address = addresses.get(0);
-                    String addressText = address.getAddressLine(0);
+                    addressText = address.getAddressLine(0);
                     country = address.getCountryName();
                     postalCode = address.getPostalCode();
 
@@ -251,7 +252,7 @@ public class NewFragment extends Fragment {
                             if (issueId != null) {
                                 Issue issue = new Issue(
                                         issueId, userId, description,
-                                        currentLocation.getLatitude(), currentLocation.getLongitude(),
+                                        currentLocation.getLatitude(), currentLocation.getLongitude(), addressText,
                                         photoUrls, "new",
                                         new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(new Date()),
                                         timezone, country, postalCode

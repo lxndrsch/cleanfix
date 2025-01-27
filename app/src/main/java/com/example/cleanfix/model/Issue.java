@@ -14,11 +14,12 @@ public class Issue {
     private String timezone;
     private String country;
     private String postalCode;
+    private String addressText;
 
     // Default constructor (required for Firebase)
     public Issue() {}
 
-    public Issue(String issueId, String userId, String description, double latitude, double longitude,
+    public Issue(String issueId, String userId, String description, double latitude, double longitude, String addressText,
                  List<String> photoUrls, String status, String timestamp, String timezone, String country, String postalCode) {
         this.issueId = issueId;
         this.userId = userId;
@@ -31,6 +32,7 @@ public class Issue {
         this.timezone = timezone;
         this.country = country;
         this.postalCode = postalCode;
+        this.addressText = addressText;
     }
 
     // Getters and Setters
@@ -68,6 +70,13 @@ public class Issue {
 
     public double getLongitude() {
         return longitude;
+    }
+    public void setAddressText(String addressText) {
+        this.addressText = addressText;
+    }
+
+    public String getaddressText() {
+        return addressText;
     }
 
     public void setLongitude(double longitude) {

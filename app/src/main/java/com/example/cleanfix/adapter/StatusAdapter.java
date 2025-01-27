@@ -66,7 +66,7 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusAdapter.StatusView
                 intent.putExtra("longitude", issue.getLongitude());
                 intent.putExtra("status", issue.getStatus());
                 intent.putExtra("timestamp", issue.getTimestamp());
-
+                intent.putExtra("address", issue.getaddressText());
                 // Handle photoUrls safely
                 if (issue.getPhotoUrls() != null && !issue.getPhotoUrls().isEmpty()) {
                     intent.putStringArrayListExtra("photoUrls", new ArrayList<>(issue.getPhotoUrls()));

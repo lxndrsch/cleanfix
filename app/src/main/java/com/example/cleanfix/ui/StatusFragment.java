@@ -59,7 +59,8 @@ public class StatusFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        statusAdapter = new StatusAdapter(issueList);
+        // Pass both issueList and context to the adapter
+        statusAdapter = new StatusAdapter(issueList, requireContext());
         statusRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         statusRecyclerView.setAdapter(statusAdapter);
     }

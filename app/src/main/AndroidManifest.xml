@@ -19,7 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CleanFix"
         tools:targetApi="31">
-
+        <activity android:name=".ui.IssueDetailActivity"
+            android:label="Issue Detail">
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">

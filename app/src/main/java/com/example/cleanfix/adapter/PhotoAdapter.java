@@ -27,7 +27,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
     @NonNull
     @Override
     public PhotoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate the item layout for each photo
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_photo, parent, false);
         return new PhotoViewHolder(view);
     }
@@ -36,16 +35,14 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
     public void onBindViewHolder(@NonNull PhotoViewHolder holder, int position) {
         Uri photoUri = photoUris.get(position);
 
-        // Use Glide to load the image with error handling and caching options
         Glide.with(holder.imageView.getContext())
                 .load(photoUri)
                 .apply(new RequestOptions()
-                        .placeholder(R.drawable.placeholder_image) // Placeholder image while loading
-                        .diskCacheStrategy(DiskCacheStrategy.ALL) // Cache optimization
-                        .centerCrop()) // Scale type for the image
+                        .placeholder(R.drawable.placeholder_image)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .centerCrop())
                 .into(holder.imageView);
 
-        // Set click listener for the remove button
         holder.removeButton.setOnClickListener(v -> {
             photoUris.remove(position);
             notifyItemRemoved(position);

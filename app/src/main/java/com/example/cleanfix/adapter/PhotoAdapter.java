@@ -21,9 +21,18 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
 
     private final List<Uri> photoUris;
     private final int maxImages;
-    public PhotoAdapter(List<Uri> photoUris, int maxImages) {
+    private final boolean isDeleteEnabled;
+
+    // Constructor with isDeleteEnabled parameter
+    public PhotoAdapter(List<Uri> photoUris, int maxImages, boolean isDeleteEnabled) {
         this.photoUris = photoUris;
         this.maxImages = maxImages > 0 ? maxImages : photoUris.size();
+        this.isDeleteEnabled = isDeleteEnabled;
+    }
+
+    // Overloaded constructor for default isDeleteEnabled value
+    public PhotoAdapter(List<Uri> photoUris, int maxImages) {
+        this(photoUris, maxImages, false); // Default isDeleteEnabled to false
     }
 
     @NonNull
@@ -45,11 +54,17 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.PhotoViewHol
                         .centerCrop())
                 .into(holder.imageView);
 
-        holder.removeButton.setOnClickListener(v -> {
-            photoUris.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, photoUris.size());
-        });
+        // Set visibility of the remove button based on isDeleteEnabled
+        if (isDeleteEnabled) {
+            holder.removeButton.setVisibility(View.VISIBLE);
+            holder.removeButton.setOnClickListener(v -> {
+                photoUris.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, photoUris.size());
+            });
+        } else {
+            holder.removeButton.setVisibility(View.GONE);
+        }
     }
 
     @Override

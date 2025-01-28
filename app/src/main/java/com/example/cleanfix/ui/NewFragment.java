@@ -262,6 +262,12 @@ public class NewFragment extends Fragment {
                                         .addOnSuccessListener(aVoid -> {
                                             Toast.makeText(requireContext(), "Issue uploaded successfully.", Toast.LENGTH_SHORT).show();
                                             resetForm();
+
+                                            // Redirect to StatusFragment
+                                            requireActivity().getSupportFragmentManager()
+                                                    .beginTransaction()
+                                                    .replace(R.id.container, new StatusFragment())
+                                                    .commit();
                                         })
                                         .addOnFailureListener(e -> Toast.makeText(requireContext(), "Failed to upload issue.", Toast.LENGTH_SHORT).show());
                             }

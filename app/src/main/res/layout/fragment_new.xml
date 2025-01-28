@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingBottom="?attr/actionBarSize"
-    android:background="#0D1B2A">
+    android:background="#6e8f96">
 
     <!-- TextView for displaying today's date -->
     <TextView
@@ -14,9 +14,8 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:textColor="#FFFFFF"
-    android:textSize="16sp"
-    android:textStyle="bold"
-    android:text="Date: 2025-01-26" />
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <!-- Non-editable text field for displaying location -->
     <TextView
@@ -25,9 +24,8 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:textColor="#FFFFFF"
-    android:textSize="16sp"
-    android:textStyle="bold"
-    android:text="Location: Not Available" />
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <!-- RecyclerView for displaying photos -->
     <androidx.recyclerview.widget.RecyclerView
@@ -38,16 +36,27 @@
         android:padding="8dp"
         android:scrollbars="vertical" />
 
-    <!-- EditText for issue description -->
-    <EditText
-        android:id="@+id/description_edit_text"
+    <!-- FrameLayout for issue description -->
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Add a description..."
-        android:padding="8dp"
-        android:backgroundTint="#1B263B"
-    android:textColor="#FFFFFF"
-    android:textColorHint="#FFFFFF" />
+        android:layout_margin="8dp"
+        android:background="@android:color/white"
+        android:padding="2dp"
+        android:elevation="4dp">
+
+        <!-- EditText for issue description -->
+        <EditText
+            android:id="@+id/description_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Describe the issue here and add up to 4 photos."
+            android:minHeight="60dp"
+            android:padding="8dp"
+            android:background="#478074"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF" />
+    </FrameLayout>
 
     <!-- Horizontal LinearLayout for buttons -->
     <LinearLayout
@@ -62,9 +71,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:minHeight="80dp"
-        android:text="Take Photo"
-        android:backgroundTint="#415A77"
-        android:textColor="#FFFFFF" />
+            android:text="Take Photo"
+            android:backgroundTint="#21554B"
+            android:textColor="#FFFFFF" />
 
         <!-- Button to submit photos and issue -->
         <Button
@@ -73,8 +82,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:minHeight="80dp"
-        android:text="Submit Issue"
-        android:backgroundTint="#415A77"
-        android:textColor="#FFFFFF" />
+            android:text="Submit Issue"
+            android:backgroundTint="#21554B"
+            android:textColor="#FFFFFF" />
     </LinearLayout>
 </LinearLayout>

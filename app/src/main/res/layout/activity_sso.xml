@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:padding="16dp"
     android:gravity="center"
-    android:background="#0D1B2A">
+    android:background="#6e8f96">
 
     <!-- App Logo or Welcome Image -->
     <ImageView
@@ -24,7 +24,6 @@
         android:layout_height="wrap_content"
         android:text="Report, Restore, Revitalize"
         android:textSize="24sp"
-        android:textStyle="bold"
         android:textColor="#FFFFFF"
         android:layout_marginBottom="16dp"
         android:gravity="center" />
@@ -36,8 +35,9 @@
         android:layout_height="wrap_content"
         android:text="Sign in with Google"
         android:layout_marginTop="32dp"
-        android:backgroundTint="#415A77"
-        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:backgroundTint="#21554B"
+        android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:padding="16dp" />
 
@@ -50,6 +50,6 @@
         android:textSize="12sp"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:textColor="@android:color/darker_gray" />
+        android:textColor="#FFFFFF" />
 
 </LinearLayout>

@@ -2,16 +2,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Dropdown for filtering -->
-    <Spinner
-        android:id="@+id/filter_spinner"
-        android:layout_width="wrap_content"
+    <!-- LinearLayout for filter controls (horizontal orientation) -->
+    <LinearLayout
+        android:id="@+id/filter_controls"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:entries="@array/filter_options"
-        android:spinnerMode="dropdown" />
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
 
+        <!-- Dropdown for filtering -->
+        <Spinner
+            android:id="@+id/filter_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:spinnerMode="dropdown"
+            android:entries="@array/filter_options" />
+
+        <!-- Button for filtering within 1 km -->
+        <Button
+            android:id="@+id/filter_within_1km_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Within 1 km" />
+    </LinearLayout>
+
+    <!-- ProgressBar centered in parent RelativeLayout -->
     <ProgressBar
         android:id="@+id/status_progress_bar"
         android:layout_width="wrap_content"
@@ -19,6 +36,7 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
+    <!-- TextView to display when no issues are found -->
     <TextView
         android:id="@+id/no_issues_text_view"
         android:layout_width="wrap_content"
@@ -28,11 +46,12 @@
         android:textSize="18sp"
         android:visibility="gone" />
 
+    <!-- RecyclerView positioned below the filter controls -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/status_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="16dp"
-        android:layout_below="@id/filter_spinner" />
+        android:layout_below="@id/filter_controls"
+        android:layout_margin="16dp" />
 
 </RelativeLayout>

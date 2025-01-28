@@ -3,14 +3,12 @@ package com.example.cleanfix.ui;
 import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cleanfix.R;
@@ -50,12 +48,18 @@ public class IssueDetailActivity extends AppCompatActivity {
         issueId = getIntent().getStringExtra("issueId");
         String description = getIntent().getStringExtra("description");
         String status = getIntent().getStringExtra("status");
-        String address = getIntent().getStringExtra("addressText");
+        String address = getIntent().getStringExtra("address");
         String timestamp = getIntent().getStringExtra("timestamp");
         ArrayList<String> photoUrls = getIntent().getStringArrayListExtra("photoUrls");
 
+        // Safeguard against null values
+        if (description == null) description = "Description not available.";
+        if (address == null) address = "Address not provided.";
+        if (timestamp == null) timestamp = "Timestamp not available.";
+        if (status == null) status = "Status not available.";
+
         // Set issue details (Concatenate date, address, and status)
-        String issueDetails = String.format("%s\n%s\nStatus: %s\nDesscription: %s", timestamp, address, status, description);
+        String issueDetails = String.format("%s\n%s\nStatus: %s\nDescription: %s", timestamp, address, status, description);
         descriptionTextView.setText(issueDetails);
 
         // Handle photos

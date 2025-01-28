@@ -32,7 +32,7 @@
       "allowedUsers": {
         "user_id_3": { "role": "owner" }
       },
-      "timestamp": "2025-01-24T12:00:00Z",
+        "timestamp": "2025-01-24T12:00:00Z",
       "timezone": "UTC",
       "country": "USA",
       "postalCode": "54321"

@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Spinner;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,9 +38,11 @@ public class StatusFragment extends Fragment {
     private RecyclerView statusRecyclerView;
     private ProgressBar progressBar;
     private TextView noIssuesTextView;
+    private Spinner filterSpinner;
 
     private StatusAdapter statusAdapter;
     private List<Issue> issueList = new ArrayList<>();
+    private String selectedFilter = "New"; // Default filter value
 
     @Nullable
     @Override
@@ -53,16 +57,32 @@ public class StatusFragment extends Fragment {
         statusRecyclerView = view.findViewById(R.id.status_recycler_view);
         progressBar = view.findViewById(R.id.status_progress_bar);
         noIssuesTextView = view.findViewById(R.id.no_issues_text_view);
+        filterSpinner = view.findViewById(R.id.filter_spinner);
 
         setupRecyclerView();
+        setupFilterSpinner();
         fetchIssuesFromFirebase();
     }
 
     private void setupRecyclerView() {
-        // Pass both issueList and context to the adapter
         statusAdapter = new StatusAdapter(issueList, requireContext());
         statusRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         statusRecyclerView.setAdapter(statusAdapter);
+    }
+
+    private void setupFilterSpinner() {
+        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedFilter = parent.getItemAtPosition(position).toString(); // Get the selected filter
+                fetchIssuesFromFirebase(); // Fetch issues based on the selected filter
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Default filter remains "New"
+            }
+        });
     }
 
     private void fetchIssuesFromFirebase() {
@@ -78,6 +98,7 @@ public class StatusFragment extends Fragment {
         progressBar.setVisibility(View.VISIBLE);
         noIssuesTextView.setVisibility(View.GONE);
 
+        // Fetch issues based on userId and selected filter
         databaseReference.orderByChild("userId").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -85,7 +106,7 @@ public class StatusFragment extends Fragment {
 
                 for (DataSnapshot issueSnapshot : snapshot.getChildren()) {
                     Issue issue = issueSnapshot.getValue(Issue.class);
-                    if (issue != null) {
+                    if (issue != null && issue.getStatus().equalsIgnoreCase(selectedFilter)) {
                         issueList.add(issue);
                     }
                 }

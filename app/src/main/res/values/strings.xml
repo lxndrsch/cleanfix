@@ -5,4 +5,8 @@
     <string name="title_notifications">Social</string>
     <string name="default_web_client_id">519638421581-ve8obc3db19bp184kjqka1nq7pfrppqt.apps.googleusercontent.com</string>
     <string name="remove_image">Remove Image</string>
+    <string-array name="filter_options">
+        <item>New</item>
+        <item>Resolved</item>
+    </string-array>
 </resources>

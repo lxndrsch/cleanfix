@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class IssueDetailActivity extends AppCompatActivity {
 
-    private ImageButton backButton;
+    private Button backButton;
     private Button resolveButton;
     private TextView descriptionTextView, statusTextView;
     private RecyclerView photosRecyclerView;
@@ -54,7 +55,7 @@ public class IssueDetailActivity extends AppCompatActivity {
         ArrayList<String> photoUrls = getIntent().getStringArrayListExtra("photoUrls");
 
         // Set issue details (Concatenate date, address, and status)
-        String issueDetails = String.format("%s\n%s\nStatus: %s", timestamp, address, status);
+        String issueDetails = String.format("%s\n%s\nStatus: %s\nDesscription: %s", timestamp, address, status, description);
         descriptionTextView.setText(issueDetails);
 
         // Handle photos
@@ -74,7 +75,7 @@ public class IssueDetailActivity extends AppCompatActivity {
     }
 
     private void setupPhotoRecyclerView(List<Uri> photoUris) {
-        photosRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        photosRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         PhotoAdapter photoAdapter = new PhotoAdapter(photoUris, 4);
         photosRecyclerView.setAdapter(photoAdapter);
     }

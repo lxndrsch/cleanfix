@@ -2,17 +2,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#0D1B2A">
 
-    <!-- Back Button -->
-    <ImageButton
-        android:id="@+id/back_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_menu_revert"
-        android:contentDescription="Back"
+
+    <!-- Photos RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/photos_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:layout_marginBottom="16dp" />
-
     <!-- Description TextView -->
     <TextView
         android:id="@+id/description_text_view"
@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:textColor="#FFFFFF"
         android:layout_marginBottom="8dp" />
 
     <!-- Status TextView -->
@@ -28,13 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:layout_marginBottom="16dp" />
-
-    <!-- Photos RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/photos_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:textColor="#FFFFFF"
         android:layout_marginBottom="16dp" />
 
     <!-- Buttons -->
@@ -47,20 +42,24 @@
         <!-- Resolve Button -->
         <Button
             android:id="@+id/resolve_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="80dp"
             android:text="Resolve"
             android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/teal_200"
+            android:backgroundTint="#0A1521"
             android:textColor="@android:color/white" />
 
         <!-- Back Button -->
         <Button
-            android:id="@+id/back_to_status_button"
-            android:layout_width="wrap_content"
+            android:id="@+id/back_button"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:minHeight="80dp"
             android:text="Back"
-            android:backgroundTint="@color/purple_500"
+            android:backgroundTint="#0A1521"
             android:textColor="@android:color/white" />
     </LinearLayout>
 </LinearLayout>

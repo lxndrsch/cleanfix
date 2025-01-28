@@ -17,7 +17,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:spinnerMode="dropdown"
-            android:entries="@array/filter_options" />
+            android:entries="@array/filter_options"
+            android:popupBackground="#6e8f96"
+            android:popupTheme="@style/CustomSpinnerStyle"/>
 
         <!-- Button for filtering within 1 km -->
         <Button
@@ -25,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:textStyle="bold"
             android:text="Within 1 km" />
     </LinearLayout>
 

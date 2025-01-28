@@ -50,7 +50,7 @@
             android:id="@+id/description_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Describe the issue here and add up to 4 photos."
+            android:hint="Describe the issue here..."
             android:minHeight="60dp"
             android:padding="8dp"
             android:background="#478074"
@@ -72,6 +72,7 @@
             android:layout_weight="1"
             android:minHeight="80dp"
             android:text="Take Photo"
+            android:textStyle="bold"
             android:backgroundTint="#21554B"
             android:textColor="#FFFFFF" />
 
@@ -83,6 +84,7 @@
             android:layout_weight="1"
             android:minHeight="80dp"
             android:text="Submit Issue"
+            android:textStyle="bold"
             android:backgroundTint="#21554B"
             android:textColor="#FFFFFF" />
     </LinearLayout>

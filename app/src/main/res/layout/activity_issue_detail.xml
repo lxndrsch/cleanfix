@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="#0D1B2A">
+    android:background="#6e8f96">
 
 
     <!-- Photos RecyclerView -->
@@ -48,7 +48,8 @@
             android:minHeight="80dp"
             android:text="Resolve"
             android:layout_marginEnd="8dp"
-            android:backgroundTint="#0A1521"
+            android:textStyle="bold"
+            android:backgroundTint="#478074"
             android:textColor="@android:color/white" />
 
         <!-- Back Button -->
@@ -59,7 +60,8 @@
             android:layout_weight="1"
             android:minHeight="80dp"
             android:text="Back"
-            android:backgroundTint="#0A1521"
+            android:textStyle="bold"
+            android:backgroundTint="#478074"
             android:textColor="@android:color/white" />
     </LinearLayout>
 </LinearLayout>

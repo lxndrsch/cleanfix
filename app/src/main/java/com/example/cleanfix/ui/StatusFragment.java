@@ -90,6 +90,11 @@ public class StatusFragment extends Fragment {
             fetchIssuesFromFirebase();
         }
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        fetchIssuesFromFirebase(); // Refresh data when returning to the fragment
+    }
 
     private void setupRecyclerView() {
         statusAdapter = new StatusAdapter(issueList, requireContext());
